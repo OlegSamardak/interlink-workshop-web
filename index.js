@@ -1,9 +1,13 @@
 var studentForm;
 
-
-
 function init() {
     loadStudents().then(renderStudents);
+
+    studentForm = document.getElementById('student-form');
+    studentForm.addEventListener('submit', ev => {
+        ev.preventDefault();
+        createStudent().then(loadStudents).then(renderStudents);
+    })
 }
 
 const url = "http://localhost:3000/students";
@@ -27,3 +31,19 @@ function renderStudents(students) {
 function loadStudents() {
     return fetch(url).then(r => r.json())
 }
+
+function createStudent() {
+    let student ={
+        name: "",
+        score: 0
+    };
+    student.name = studentForm.name.value;
+    student.score = studentForm.score.value;
+    console.log(student);
+    return fetch(url, {
+        method: "POST",
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(student),
+    })
+}
+
